@@ -7,13 +7,16 @@
 #include "SparkFun_APDS9960_Wire1.h"
 SparkFun_APDS9960_Wire0 apds0 = SparkFun_APDS9960_Wire0();
 SparkFun_APDS9960_Wire1 apds1 = SparkFun_APDS9960_Wire1();
- uint8_t proximity_data = 0;
- uint8_t proximity_data0 = 0;
+uint8_t proximity_data = 0;
+uint8_t proximity_data0 = 0;
  
 #include "Filter.h"
 
 long FilterWeight = 5;
 ExponentialFilter<long> Filter1(5,0);
+
+//int myleds[] ={32,31,12,13,14,9,8,11,10,15,28,29,4,7,6,5,3,22,1,0};//Se agrega
+int myleds[] ={25,24,12,13,14,9,8,11,10,15,28,29,4,7,6,5,3,22,1,0};//Se agrega
 
 int dvolume=0;
 int dbright=0;
@@ -97,7 +100,6 @@ volatile int up2=0;
 volatile int up3=0;
 volatile int nextarrow=0;
 
-
 const int SD_CS = BUILTIN_SDCARD;
 const int avgSamples = 10;
 
@@ -121,14 +123,10 @@ String strings[6];
 int tflag=0;
 long standmillis=0;
 
-
-
 int cuRead=1;
 long varCurrent=0;
 
-
 int Sensor0=41;
-
 
 //int Buzzer=6;
 int Buzzer=37;
@@ -143,7 +141,6 @@ String lcurrentRS="";
 String uvReadingS="";
 String st0,st1,st2,st3,st4,st5;
 
-
 File myFile;
 File myFile2;
 File myFile3;
@@ -156,7 +153,7 @@ unsigned int Clock0 = 0, R_clock0;
 boolean Reset0 = false, Stop0 = false, Paused0 = false;
 volatile boolean timeFlag0 = false;
 int varS0=0;//Seconds turned on
-int varM0=6;//Minutes turned on
+int varM0=3;//Minutes turned on
 /////////////////////////////////////////////////////////////////////////////
 NexVariable storageset = NexVariable(10,7,"touchyStorage");
 
@@ -173,7 +170,6 @@ NexVariable Ready0 = NexVariable(0,6,"Ready0"); // Intro Screen States
 NexTimer dReady = NexTimer(1,2,"tm0");//Advice
 NexTimer timerP = NexTimer(1,13,"tm1");//Attach
 NexTimer timerI = NexTimer(1,15,"tm2");//Secure
-
 
 NexPicture pReady = NexPicture(1,1,"p0");//"System"
 NexPicture mainPicture = NexPicture(1,7,"p1");//Main Picture
@@ -203,7 +199,6 @@ NexText timeText = NexText(3,1,"t0");  //Timestamp
 
 NexText dateText = NexText(2,8,"t4");  //dateStamp
 
-
 NexText haloText = NexText(11,6,"haloText"); 
 NexText audioText = NexText(11,7,"audioText"); 
 
@@ -211,8 +206,6 @@ NexText lampCyclesCurr = NexText(2,4,"t0");  //LampCycles Currently
 NexText uvReading = NexText(2,5,"t1");   //Last UV Reading
 NexText currentRead = NexText(2,6,"t2");   //Last Current Reading
 NexText tCycles = NexText(2,7,"t3");   //Total Cycles
-
-
 
 NexText redText = NexText(1,8,"redText"); 
 
@@ -224,7 +217,6 @@ NexButton mhelpb = NexButton(1,6,"mhelpb");
 NexButton sresetb =NexButton(2,1,"sresetb");
 NexButton shomeb = NexButton(2,2,"shomeb");
 NexButton shelpb = NexButton(2,3,"shelpb");
-
 
 NexButton rstopb =NexButton(3,4,"rstopb");
 
@@ -267,8 +259,6 @@ NexButton up2b = NexButton(11,12,"up2");
 NexButton up3b = NexButton(11,13,"up3");
 
 NexButton nextarrowb = NexButton(2,12,"nextarrowb");
-
-
 
 NexButton rshomeb = NexButton(13,2,"rshomeb");
 NexButton rshelpb = NexButton(13,3,"rshelpb");
@@ -704,32 +694,6 @@ NexVariable states12 = NexVariable(12,1,"States12"); // Boot Screen States
 NexVariable states13 = NexVariable(13,1,"States13"); // Success States
 NexVariable states14 = NexVariable(14,3,"States14"); // Standby States
 
-void alloff()
-{
-digitalWrite(32,LOW);
- digitalWrite(31,LOW);
- digitalWrite(12,LOW);
- digitalWrite(13,LOW);
- digitalWrite(14,LOW);
- digitalWrite(9,LOW);
- digitalWrite(8,LOW);
- digitalWrite(11,LOW);  
- digitalWrite(10,LOW);
- digitalWrite(15,LOW);
- digitalWrite(28,LOW);
- digitalWrite(29,LOW);
- digitalWrite(4,LOW);
- digitalWrite(7,LOW);   
- digitalWrite(6,LOW);
- digitalWrite(5,LOW);
- digitalWrite(3,LOW); 
- digitalWrite(22,LOW);
- digitalWrite(1,LOW);
- digitalWrite(0,LOW);  
- digitalWrite(2,LOW);
- digitalWrite(23,LOW);
- 
-}
 
  void psensor0()
  {
@@ -754,624 +718,95 @@ digitalWrite(32,LOW);
     ////SERIAl.println(proximity_data);
   }
  }
-
+ 
 void red()
 {
- digitalWrite(32,LOW);
- digitalWrite(31,LOW);
- digitalWrite(12,LOW);
- digitalWrite(13,LOW);
- digitalWrite(14,LOW);
- digitalWrite(9,LOW);
- digitalWrite(8,LOW);
- digitalWrite(11,LOW);  
- digitalWrite(10,LOW);
- digitalWrite(15,LOW);
- digitalWrite(28,LOW);
- digitalWrite(29,LOW);
- digitalWrite(4,LOW);
- digitalWrite(7,LOW);   
- digitalWrite(6,LOW);
- digitalWrite(5,LOW);
- digitalWrite(3,LOW); 
- digitalWrite(22,LOW);
- digitalWrite(1,LOW);
- digitalWrite(0,LOW);
-      digitalWrite(2,HIGH);
-   digitalWrite(23,LOW);
+ for (int i=0; i<=19;i++) 
+ {
+  analogWrite(myleds[i],0);
+ }
+ analogWrite(23,0);
+ analogWrite(2,255);
 }
 
 void green()
 {
-   digitalWrite(32,LOW);
- digitalWrite(31,LOW);
- digitalWrite(12,LOW);
- digitalWrite(13,LOW);
- digitalWrite(14,LOW);
- digitalWrite(9,LOW);
- digitalWrite(8,LOW);
- digitalWrite(11,LOW);  
- digitalWrite(10,LOW);
- digitalWrite(15,LOW);
- digitalWrite(28,LOW);
- digitalWrite(29,LOW);
- digitalWrite(4,LOW);
- digitalWrite(7,LOW);   
- digitalWrite(6,LOW);
- digitalWrite(5,LOW);
- digitalWrite(3,LOW); 
- digitalWrite(22,LOW);
- digitalWrite(1,LOW);
- digitalWrite(0,LOW);  
-      digitalWrite(2,LOW);
-   digitalWrite(23,HIGH);
-}
-
-void twenty()
-{
- digitalWrite(32,LOW);
- digitalWrite(31,LOW);
- digitalWrite(12,LOW);
- digitalWrite(13,LOW);
- digitalWrite(14,LOW);
- digitalWrite(9,LOW);
- digitalWrite(8,LOW);
- digitalWrite(11,LOW);  
- digitalWrite(10,LOW);
- digitalWrite(15,LOW);
- digitalWrite(28,LOW);
- digitalWrite(29,LOW);
- digitalWrite(4,LOW);
- digitalWrite(7,LOW);   
- digitalWrite(6,LOW);
- digitalWrite(5,LOW);
- digitalWrite(3,LOW); 
- digitalWrite(22,LOW);
- digitalWrite(1,LOW);
- digitalWrite(0,HIGH);  
- digitalWrite(2,LOW);
- digitalWrite(23,LOW);
-}
-
-void nineteen()
-{
- digitalWrite(32,LOW);
- digitalWrite(31,LOW);
- digitalWrite(12,LOW);
- digitalWrite(13,LOW);
- digitalWrite(14,LOW);
- digitalWrite(9,LOW);
- digitalWrite(8,LOW);
- digitalWrite(11,LOW);  
- digitalWrite(10,LOW);
- digitalWrite(15,LOW);
- digitalWrite(28,LOW);
- digitalWrite(29,LOW);
- digitalWrite(4,LOW);
- digitalWrite(7,LOW);   
- digitalWrite(6,LOW);
- digitalWrite(5,LOW);
- digitalWrite(3,LOW); 
- digitalWrite(22,LOW);
- digitalWrite(1,HIGH);
- digitalWrite(0,LOW);  
- digitalWrite(2,LOW);
- digitalWrite(23,LOW);
-}
-
-void eighteen()
-{
-  digitalWrite(32,LOW);
- digitalWrite(31,LOW);
- digitalWrite(12,LOW);
- digitalWrite(13,LOW);
- digitalWrite(14,LOW);
- digitalWrite(9,LOW);
- digitalWrite(8,LOW);
- digitalWrite(11,LOW);  
- digitalWrite(10,LOW);
- digitalWrite(15,LOW);
- digitalWrite(28,LOW);
- digitalWrite(29,LOW);
- digitalWrite(4,LOW);
- digitalWrite(7,LOW);   
- digitalWrite(6,LOW);
- digitalWrite(5,LOW);
- digitalWrite(3,LOW); 
- digitalWrite(22,HIGH);
- digitalWrite(1,LOW);
- digitalWrite(0,LOW);  
- digitalWrite(2,LOW);
- digitalWrite(23,LOW);
-}
-
-void seventeen()
-{
-  digitalWrite(32,LOW);
- digitalWrite(31,LOW);
- digitalWrite(12,LOW);
- digitalWrite(13,LOW);
- digitalWrite(14,LOW);
- digitalWrite(9,LOW);
- digitalWrite(8,LOW);
- digitalWrite(11,LOW);  
- digitalWrite(10,LOW);
- digitalWrite(15,LOW);
- digitalWrite(28,LOW);
- digitalWrite(29,LOW);
- digitalWrite(4,LOW);
- digitalWrite(7,LOW);   
- digitalWrite(6,LOW);
- digitalWrite(5,LOW);
- digitalWrite(3,HIGH); 
- digitalWrite(22,LOW);
- digitalWrite(1,LOW);
- digitalWrite(0,LOW);  
- digitalWrite(2,LOW);
- digitalWrite(23,LOW);
-}
-
-
+ for (int i=0; i<=19;i++) 
+ {
+  analogWrite(myleds[i],0);
+ }
+ 
+ if(dbright==25)
+    {
+      bright=64;
+    }
+    else if (dbright==50)
+    {
+      bright=128;
+    }
+     else if (dbright==75)
+    {
+      bright=192;
+    }
+     else if (dbright==100)
+    {
+      bright=255;
+    }
     
-void sixteen()
+
+ analogWrite(23,bright);
+ analogWrite(2,0);
+}
+
+void alloff()
 {
- digitalWrite(32,LOW);
- digitalWrite(31,LOW);
- digitalWrite(12,LOW);
- digitalWrite(13,LOW);
- digitalWrite(14,LOW);
- digitalWrite(9,LOW);
- digitalWrite(8,LOW);
- digitalWrite(11,LOW);  
- digitalWrite(10,LOW);
- digitalWrite(15,LOW);
- digitalWrite(28,LOW);
- digitalWrite(29,LOW);
- digitalWrite(4,LOW);
- digitalWrite(7,LOW);   
- digitalWrite(6,LOW);
- digitalWrite(5,HIGH);
- digitalWrite(3,LOW); 
- digitalWrite(22,LOW);
- digitalWrite(1,LOW);
- digitalWrite(0,LOW);  
- digitalWrite(2,LOW);
- digitalWrite(23,LOW);
-} 
+ for (int i=0; i<=19;i++) 
+ {
+  analogWrite(myleds[i],0);
+ } 
+ analogWrite(23,0);
+ analogWrite(2,0);
+}
 
-
-
-void fifteen()
+void yellow()
 {
- digitalWrite(32,LOW);
- digitalWrite(31,LOW);
- digitalWrite(12,LOW);
- digitalWrite(13,LOW);
- digitalWrite(14,LOW);
- digitalWrite(9,LOW);
- digitalWrite(8,LOW);
- digitalWrite(11,LOW);  
- digitalWrite(10,LOW);
- digitalWrite(15,LOW);
- digitalWrite(28,LOW);
- digitalWrite(29,LOW);
- digitalWrite(4,LOW);
- digitalWrite(7,LOW);   
- digitalWrite(6,HIGH);
- digitalWrite(5,LOW);
- digitalWrite(3,LOW); 
- digitalWrite(22,LOW);
- digitalWrite(1,LOW);
- digitalWrite(0,LOW);  
- digitalWrite(2,LOW);
- digitalWrite(23,LOW);
+ for (int i=0; i<=19;i++) 
+ {
+  analogWrite(myleds[i],0);
+ }
+ analogWrite(2,165); 
+ analogWrite(23,90);
+ threads.delayMicroseconds(bright);
+}
+
+void orange()
+{
+ for (int i=0; i<=19;i++) 
+ {
+  analogWrite(myleds[i],0);
+ }
+ analogWrite(2,230); 
+ analogWrite(23,25);
+ threads.delayMicroseconds(bright);
 }
 
 
-
-void fourteen()
+void startLedFunction()
 {
- digitalWrite(32,LOW);
- digitalWrite(31,LOW);
- digitalWrite(12,LOW);
- digitalWrite(13,LOW);
- digitalWrite(14,LOW);
- digitalWrite(9,LOW);
- digitalWrite(8,LOW);
- digitalWrite(11,LOW);  
- digitalWrite(10,LOW);
- digitalWrite(15,LOW);
- digitalWrite(28,LOW);
- digitalWrite(29,LOW);
- digitalWrite(4,LOW);
- digitalWrite(7,HIGH);   
- digitalWrite(6,LOW);
- digitalWrite(5,LOW);
- digitalWrite(3,LOW); 
- digitalWrite(22,LOW);
- digitalWrite(1,LOW);
- digitalWrite(0,LOW);  
- digitalWrite(2,LOW);
- digitalWrite(23,LOW);
+ for (int i=0; i<=19;i++) 
+ {
+  analogWrite(myleds[i],255);
+  delay(35);
+  analogWrite(myleds[i],0);
+ } 
+ for (int j=19; j>=0;j--)
+ {
+  analogWrite(myleds[j],255);
+  delay(35);
+  analogWrite(myleds[j],0);
+ }
+ alloff();
 }
-void thirteen()
-{
- digitalWrite(32,LOW);
- digitalWrite(31,LOW);
- digitalWrite(12,LOW);
- digitalWrite(13,LOW);
- digitalWrite(14,LOW);
- digitalWrite(9,LOW);
- digitalWrite(8,LOW);
- digitalWrite(11,LOW);  
- digitalWrite(10,LOW);
- digitalWrite(15,LOW);
- digitalWrite(28,LOW);
- digitalWrite(29,LOW);
- digitalWrite(4,HIGH);
- digitalWrite(7,LOW);   
- digitalWrite(6,LOW);
- digitalWrite(5,LOW);
- digitalWrite(3,LOW); 
- digitalWrite(22,LOW);
- digitalWrite(1,LOW);
- digitalWrite(0,LOW);  
- digitalWrite(2,LOW);
- digitalWrite(23,LOW);
-}
-
-void twelve()
-{
- digitalWrite(32,LOW);
- digitalWrite(31,LOW);
- digitalWrite(12,LOW);
- digitalWrite(13,LOW);
- digitalWrite(14,LOW);
- digitalWrite(9,LOW);
- digitalWrite(8,LOW);
- digitalWrite(11,LOW);  
- digitalWrite(10,LOW);
- digitalWrite(15,LOW);
- digitalWrite(28,LOW);
- digitalWrite(29,HIGH);
- digitalWrite(4,LOW);
- digitalWrite(7,LOW);   
- digitalWrite(6,LOW);
- digitalWrite(5,LOW);
- digitalWrite(3,LOW); 
- digitalWrite(22,LOW);
- digitalWrite(1,LOW);
- digitalWrite(0,LOW);  
- digitalWrite(2,LOW);
- digitalWrite(23,LOW);
-}
-void eleven()
-{
-digitalWrite(32,LOW);
- digitalWrite(31,LOW);
- digitalWrite(12,LOW);
- digitalWrite(13,LOW);
- digitalWrite(14,LOW);
- digitalWrite(9,LOW);
- digitalWrite(8,LOW);
- digitalWrite(11,LOW);  
- digitalWrite(10,LOW);
- digitalWrite(15,LOW);
- digitalWrite(28,HIGH);
- digitalWrite(29,LOW);
- digitalWrite(4,LOW);
- digitalWrite(7,LOW);   
- digitalWrite(6,LOW);
- digitalWrite(5,LOW);
- digitalWrite(3,LOW); 
- digitalWrite(22,LOW);
- digitalWrite(1,LOW);
- digitalWrite(0,LOW);  
- digitalWrite(2,LOW);
- digitalWrite(23,LOW);
-}
-
-void ten()
-{
-digitalWrite(32,LOW);
- digitalWrite(31,LOW);
- digitalWrite(12,LOW);
- digitalWrite(13,LOW);
- digitalWrite(14,LOW);
- digitalWrite(9,LOW);
- digitalWrite(8,LOW);
- digitalWrite(11,LOW);  
- digitalWrite(10,LOW);
- digitalWrite(15,HIGH);
- digitalWrite(28,LOW);
- digitalWrite(29,LOW);
- digitalWrite(4,LOW);
- digitalWrite(7,LOW);   
- digitalWrite(6,LOW);
- digitalWrite(5,LOW);
- digitalWrite(3,LOW); 
- digitalWrite(22,LOW);
- digitalWrite(1,LOW);
- digitalWrite(0,LOW);  
- digitalWrite(2,LOW);
- digitalWrite(23,LOW);
-}
-
-void nine()
-{
- digitalWrite(32,LOW);
- digitalWrite(31,LOW);
- digitalWrite(12,LOW);
- digitalWrite(13,LOW);
- digitalWrite(14,LOW);
- digitalWrite(9,LOW);
- digitalWrite(8,LOW);
- digitalWrite(11,LOW);  
- digitalWrite(10,HIGH);
- digitalWrite(15,LOW);
- digitalWrite(28,LOW);
- digitalWrite(29,LOW);
- digitalWrite(4,LOW);
- digitalWrite(7,LOW);   
- digitalWrite(6,LOW);
- digitalWrite(5,LOW);
- digitalWrite(3,LOW); 
- digitalWrite(22,LOW);
- digitalWrite(1,LOW);
- digitalWrite(0,LOW);  
- digitalWrite(2,LOW);
- digitalWrite(23,LOW);
-}
-void eight()
-{
- digitalWrite(32,LOW);
- digitalWrite(31,LOW);
- digitalWrite(12,LOW);
- digitalWrite(13,LOW);
- digitalWrite(14,LOW);
- digitalWrite(9,LOW);
- digitalWrite(8,LOW);
- digitalWrite(11,HIGH);  
- digitalWrite(10,LOW);
- digitalWrite(15,LOW);
- digitalWrite(28,LOW);
- digitalWrite(29,LOW);
- digitalWrite(4,LOW);
- digitalWrite(7,LOW);   
- digitalWrite(6,LOW);
- digitalWrite(5,LOW);
- digitalWrite(3,LOW); 
- digitalWrite(22,LOW);
- digitalWrite(1,LOW);
- digitalWrite(0,LOW);  
- digitalWrite(2,LOW);
- digitalWrite(23,LOW);
-}
-
-void seven()
-{
- digitalWrite(32,LOW);
- digitalWrite(31,LOW);
- digitalWrite(12,LOW);
- digitalWrite(13,LOW);
- digitalWrite(14,LOW);
- digitalWrite(9,LOW);
- digitalWrite(8,HIGH);
- digitalWrite(11,LOW);  
- digitalWrite(10,LOW);
- digitalWrite(15,LOW);
- digitalWrite(28,LOW);
- digitalWrite(29,LOW);
- digitalWrite(4,LOW);
- digitalWrite(7,LOW);   
- digitalWrite(6,LOW);
- digitalWrite(5,LOW);
- digitalWrite(3,LOW); 
- digitalWrite(22,LOW);
- digitalWrite(1,LOW);
- digitalWrite(0,LOW);  
- digitalWrite(2,LOW);
- digitalWrite(23,LOW);
-}
-void six()
-{
- digitalWrite(32,LOW);
- digitalWrite(31,LOW);
- digitalWrite(12,LOW);
- digitalWrite(13,LOW);
- digitalWrite(14,LOW);
- digitalWrite(9,HIGH);
- digitalWrite(8,LOW);
- digitalWrite(11,LOW);  
- digitalWrite(10,LOW);
- digitalWrite(15,LOW);
- digitalWrite(28,LOW);
- digitalWrite(29,LOW);
- digitalWrite(4,LOW);
- digitalWrite(7,LOW);   
- digitalWrite(6,LOW);
- digitalWrite(5,LOW);
- digitalWrite(3,LOW); 
- digitalWrite(22,LOW);
- digitalWrite(1,LOW);
- digitalWrite(0,LOW);  
- digitalWrite(2,LOW);
- digitalWrite(23,LOW);
-}
-
-
-
-
-
-void five()
-{
- digitalWrite(32,LOW);
- digitalWrite(31,LOW);
- digitalWrite(12,LOW);
- digitalWrite(13,LOW);
- digitalWrite(14,HIGH);
- digitalWrite(9,LOW);
- digitalWrite(8,LOW);
- digitalWrite(11,LOW);  
- digitalWrite(10,LOW);
- digitalWrite(15,LOW);
- digitalWrite(28,LOW);
- digitalWrite(29,LOW);
- digitalWrite(4,LOW);
- digitalWrite(7,LOW);   
- digitalWrite(6,LOW);
- digitalWrite(5,LOW);
- digitalWrite(3,LOW); 
- digitalWrite(22,LOW);
- digitalWrite(1,LOW);
- digitalWrite(0,LOW);  
- digitalWrite(2,LOW);
- digitalWrite(23,LOW);
-}
-
-
-
-void four()
-{
- digitalWrite(32,LOW);
- digitalWrite(31,LOW);
- digitalWrite(12,LOW);
- digitalWrite(13,HIGH);
- digitalWrite(14,LOW);
- digitalWrite(9,LOW);
- digitalWrite(8,LOW);
- digitalWrite(11,LOW);  
- digitalWrite(10,LOW);
- digitalWrite(15,LOW);
- digitalWrite(28,LOW);
- digitalWrite(29,LOW);
- digitalWrite(4,LOW);
- digitalWrite(7,LOW);   
- digitalWrite(6,LOW);
- digitalWrite(5,LOW);
- digitalWrite(3,LOW); 
- digitalWrite(22,LOW);
- digitalWrite(1,LOW);
- digitalWrite(0,LOW);  
- digitalWrite(2,LOW);
- digitalWrite(23,LOW);
-}
-
-void three()
-{
- digitalWrite(32,LOW);
- digitalWrite(31,LOW);
- digitalWrite(12,HIGH);
- digitalWrite(13,LOW);
- digitalWrite(14,LOW);
- digitalWrite(9,LOW);
- digitalWrite(8,LOW);
- digitalWrite(11,LOW);  
- digitalWrite(10,LOW);
- digitalWrite(15,LOW);
- digitalWrite(28,LOW);
- digitalWrite(29,LOW);
- digitalWrite(4,LOW);
- digitalWrite(7,LOW);   
- digitalWrite(6,LOW);
- digitalWrite(5,LOW);
- digitalWrite(3,LOW); 
- digitalWrite(22,LOW);
- digitalWrite(1,LOW);
- digitalWrite(0,LOW);  
- digitalWrite(2,LOW);
- digitalWrite(23,LOW);
-}
-
-void two()
-{
- digitalWrite(32,LOW);
- digitalWrite(31,HIGH);
- digitalWrite(12,LOW);
- digitalWrite(13,LOW);
- digitalWrite(14,LOW);
- digitalWrite(9,LOW);
- digitalWrite(8,LOW);
- digitalWrite(11,LOW);  
- digitalWrite(10,LOW);
- digitalWrite(15,LOW);
- digitalWrite(28,LOW);
- digitalWrite(29,LOW);
- digitalWrite(4,LOW);
- digitalWrite(7,LOW);   
- digitalWrite(6,LOW);
- digitalWrite(5,LOW);
- digitalWrite(3,LOW); 
- digitalWrite(22,LOW);
- digitalWrite(1,LOW);
- digitalWrite(0,LOW);  
- digitalWrite(2,LOW);
- digitalWrite(23,LOW);
-}
-
-void one()
-{
- digitalWrite(32,HIGH);
- digitalWrite(31,LOW);
- digitalWrite(12,LOW);
- digitalWrite(13,LOW);
- digitalWrite(14,LOW);
- digitalWrite(9,LOW);
- digitalWrite(8,LOW);
- digitalWrite(11,LOW);  
- digitalWrite(10,LOW);
- digitalWrite(15,LOW);
- digitalWrite(28,LOW);
- digitalWrite(29,LOW);
- digitalWrite(4,LOW);
- digitalWrite(7,LOW);   
- digitalWrite(6,LOW);
- digitalWrite(5,LOW);
- digitalWrite(3,LOW); 
- digitalWrite(22,LOW);
- digitalWrite(1,LOW);
- digitalWrite(0,LOW);  
- digitalWrite(2,LOW);
- digitalWrite(23,LOW);
-}
-void (*ledfunctions[])(void) = {
-one,
-two,
-three,
-four,
-five,
-six,
-seven,
-eight,
-nine,
-ten,
-eleven,
-twelve,
-thirteen,
-fourteen,
-fifteen,
-sixteen,
-seventeen,  
-eighteen,
-nineteen,
-twenty,
-};
-
-
-  void startLedFunction()
-  {
-   for (int i=0; i<=19;i++) 
-   {
-    ledfunctions[i]();
-    delay(35);
-   } 
-   for (int j=19; j>=0;j--)
-   {
-    ledfunctions[j]();
-    delay(35);
-   }
-   alloff();
-  }
 
 
 bool blinking=false;
@@ -1480,6 +915,8 @@ void StartTimer0()
 void readingSensor()
 {
  lamp=analogRead(40);
+ //lamp= int(((lamp/255)*3.3)*10);
+ 
  st4= String(lamp);
 }
 
@@ -1531,8 +968,8 @@ void turningoff()
 }
 
 
-int ledsflag=0;
-int ledscounting=0;
+  int ledsflag=0;
+  int ledscounting=0;
 
 
 void leds()
@@ -1541,7 +978,7 @@ void leds()
  {
   if(ledstatus==1)//blue
   {
-        if(dbright==25)
+    if(dbright==25)
     {
       bright=1000;
     }
@@ -1555,17 +992,21 @@ void leds()
     }
      else if (dbright==100)
     {
-      bright=1;
+      bright=0;
     }
-    
-   for (int i = 0; i<=19; i++)
-   { 
-    ledfunctions[i]();
+    for (int i=0; i<=19;i++) 
+    {
+     analogWrite(myleds[i],255);
+    }
+     analogWrite(23,0);
+     analogWrite(2,0);
     threads.delayMicroseconds(10);
-   }
-   alloff();
-  
-    threads.delayMicroseconds(bright);
+    
+    if(dbright!=0)
+    {
+     alloff(); 
+     threads.delayMicroseconds(bright);  
+    }
    }
  
 
@@ -1581,8 +1022,7 @@ void leds()
   {
    for (int i=0;i<currentled+1;i++)
    {
-    ledfunctions[i]();
-    threads.delayMicroseconds(900);
+    analogWrite(myleds[i],255);
    }   
   }
   else
@@ -1596,12 +1036,11 @@ void leds()
    { 
     for (int i=0;i<k+1;i++)
     {
-     ledfunctions[i]();  
-     threads.delayMicroseconds(900);
+     analogWrite(myleds[i],255);
     }
+    analogWrite(myleds[currentled],0);
    }  
   }
- 
  }
 
   else if(ledstatus==4)//Red
@@ -1620,13 +1059,20 @@ void leds()
   }
   else if (dbright==100)
   {
-      bright=1;
-    }
+   bright=1;
+ }
     
   red();
    threads.delayMicroseconds(1);
-   alloff();
+   if(bright==1)
+   {
+   }
+   else
+   {
+     alloff();
    threads.delayMicroseconds(bright);
+   }
+  
  }
 
  else if(ledstatus==5)
@@ -1659,26 +1105,6 @@ void leds()
   else if(ledstatus==8)//Green
  {
   green();
-  /*if(dbright==25)
-  {
-   bright=150;
-  }
-  else if (dbright==50)
-    {
-      bright=100;
-    }
-     else if (dbright==75)
-    {
-      bright=60;
-    }
-     else if (dbright==100)
-    {
-      bright=1;
-    }
-    green();
-   threads.delayMicroseconds(1);
-   alloff();
-   threads.delayMicroseconds(bright);*/
  }
 
   else if (ledstatus==9)//Orange
@@ -1751,7 +1177,7 @@ void chronos()
          String m0S=String(m0,DEC);//As m0 is not a string, needs to be changed 
          String s0S=String(s0,DEC);//As s0 is not a string, needs to be changed
       
-        if (m0<10)//Add a zero before minutes number if this is only one digit
+        if (m0<10)//Add a zero before minutes number if this is only blue digit
         {
          m0S=String("0"+m0S);//Concatenate a 0 to minutes String variable
         }
@@ -1764,6 +1190,7 @@ void chronos()
         String taimu= String(m0S+":"+s0S); //Concatenate minutes and seconds
        ////SERIAl.print("lamp");
        ////SERIAl.println(lamp);
+       //  lamp=int(((lamp/255)*3.3)*10);
          st4= String(lamp);
         readingcurrent();
       
@@ -1810,13 +1237,6 @@ void chronos()
         Stop0=true;
         gorun=0;
         chronotrigger=0;
-       /* //SERIAl.println(setluxvalue);
-        //SERIAl.print("Luz");
-        //SERIAl.println(lamp);
-        //SERIAl.println(setcurrentvalue);
-        //SERIAl.print("Corriente");
-        //SERIAl.println(varCurrent);
-        //SERIAl.print("lo detuvo la lectura de los valores");*/
         chronostate=0;
         smillis=millis();
         dangerPage.show();
@@ -1836,9 +1256,6 @@ void chronos()
      
    else 
    {
-  /*  //SERIAl.print("Chronotrigger ");
-    //SERIAl.println(chronotrigger);
-    //SERIAl.println("me detuve por el chronotrigger");*/
     digitalWrite(lampy,LOW);
     Stop0=true;
     ledstatus=4;
@@ -1929,33 +1346,6 @@ void threadsCreator()
 }
 
 
-void yellow()
-{
- red();
- threads.delayMicroseconds(65);
- green();
- threads.delayMicroseconds(35);
- alloff();
- threads.delayMicroseconds(bright);
-}
-
-void orange()
-{
-
- red();
- threads.delayMicroseconds(50);
- green();
- threads.delayMicroseconds(1);  
- alloff();
- threads.delayMicroseconds(bright);
-}
-
-
-
-
-
-
-
 
 
 
@@ -1963,7 +1353,11 @@ void locking()
 {
  while(1)
  {
-
+  if(rstop==1)
+  {
+   ledstatus=4;
+  }
+   
   psensor0();
   psensor1();
   
@@ -1973,9 +1367,6 @@ void locking()
   
   lamp=analogRead(40);
   s1=digitalRead(41);
-    /*  Serial.println(s2);
-    Serial.println(s3);
-    Serial.println(isMainActivated);*/
  
   if(isMainActivated==1)
   {
@@ -2531,8 +1922,8 @@ void loop()
  {
   digitalWrite(lampy,LOW);
   ledstatus=8;
- 
-    green();
+  green();
+
   threads.kill(id1);
   threads.kill(id2);
   threads.kill(id3 );
@@ -2606,7 +1997,8 @@ void loop()
        }
            
        String dateS=Month+"/"+Day+"/"+String(year())+"    "+ String(hour())+":"+String(minute())+":"+String(second());
-
+   
+       //lamp=int (((lamp/255)*3.3)*10);
        
        myFile=SD.open("cqty.txt",FILE_WRITE);
        String dataString=String(strings[0].toInt()+1)+"|"+String(strings[1].toInt()+1)+"|"+strings[2]+"|"+String(varCurrent) +"|"+String(lamp)+"|"+dateS+"|";
@@ -2618,8 +2010,9 @@ void loop()
        st1= String(currentCyclesQ);
        st2= strings[2];
        st3= String(varCurrent);
-       st4= String(lamp);
        
+       
+       st4= String(lamp);
        st5= dateS;
        gorun=0;
        smillis=millis();
@@ -2730,7 +2123,7 @@ ledstatus=8;
    id7 = threads.addThread(blacking);
 
    killer4=0;
-  }
+  } 
 
   if(killer5==1)
   {
@@ -2901,49 +2294,52 @@ void setup()
  pinMode(20,INPUT);
  pinMode(21,INPUT);
  pinMode(40,INPUT);
-  pinMode(0,OUTPUT);
+ pinMode(0,OUTPUT);
  pinMode(1,OUTPUT);
-  pinMode(23,OUTPUT);
+ pinMode(23,OUTPUT);
  pinMode(2,OUTPUT);
  pinMode(29,OUTPUT);
  pinMode(28,OUTPUT);
  pinMode(2,OUTPUT);
-  pinMode(22,OUTPUT);
-  pinMode(3,OUTPUT);
-  pinMode(4,OUTPUT);
-  pinMode(5,OUTPUT);
-  pinMode(19,OUTPUT);
-  pinMode(6,OUTPUT);
-  pinMode(18,OUTPUT);
-  pinMode(7,OUTPUT);
-  pinMode(8,OUTPUT);
-  pinMode(15,OUTPUT);
-  pinMode(9,OUTPUT);
-  pinMode(10,OUTPUT);
-  pinMode(14,OUTPUT);
-  pinMode(11,OUTPUT);
-  pinMode(13,OUTPUT);
-  pinMode(12,OUTPUT);
-  pinMode(24,OUTPUT);
-  pinMode(25,OUTPUT);
-    pinMode(31,OUTPUT);
-  pinMode(32,OUTPUT);
- 
+ pinMode(22,OUTPUT);
+ pinMode(3,OUTPUT);
+ pinMode(4,OUTPUT);
+ pinMode(5,OUTPUT);
+ pinMode(19,OUTPUT);
+ pinMode(6,OUTPUT);
+ pinMode(18,OUTPUT);
+ pinMode(7,OUTPUT);
+ pinMode(8,OUTPUT);
+ pinMode(15,OUTPUT);
+ pinMode(9,OUTPUT);
+ pinMode(10,OUTPUT);
+ pinMode(14,OUTPUT);
+ pinMode(11,OUTPUT);
+ pinMode(13,OUTPUT);
+ pinMode(12,OUTPUT);
+ pinMode(24,OUTPUT);
+ pinMode(25,OUTPUT);
+ pinMode(31,OUTPUT);
+ pinMode(32,OUTPUT);
  pinMode(23,OUTPUT);
  pinMode(2,OUTPUT);
-  
-  
-  
-
-
-  nexInit();
-  if(apds0.init())
-  {
+  analogWriteFrequency(23, 375000);
+ analogWriteFrequency(2, 375000);
+ analogWrite(23,0);
+ analogWrite(2,0);
+ for (int i=0; i<=19;i++) 
+ {
+  analogWriteFrequency(myleds[i],375000);
+ }
+ nexInit();
+ if(apds0.init())
+ {
     
-  } else
-  {
+ } 
+ else
+ {
     
-  }
+ }
 
   // Start running the apds1-9960 proximity sensor (no interrupts)
   // Settings to defaults
@@ -2967,33 +2363,36 @@ void setup()
 
   // Start running the apds1-9960 proximity sensor (no interrupts)
   // Settings to defaults
-  if ( apds1.enableProximitySensor(false) ) {
-    ////SERIAl.println(F("Proximity sensor is now running"));
-  } else {
-    ////SERIAl.println(F("Something went wrong during sensor init!"));
+  if ( apds1.enableProximitySensor(false) )
+  {
+
+  } else
+  {
+
   }
 
   // Adjust the Proximity sensor gain
-  if ( !apds1.setProximityGain(0) ) {
-    ////SERIAl.println(F("Something went wrong trying to set PGAIN"));
+  if ( !apds1.setProximityGain(0) ) 
+  {
+
   } 
- 
+ Serial.println("despues de sensores");
  
    setSyncProvider(getTeensy3Time);
    if (timeStatus()!= timeSet)
    {
-    // //SERIAl.println("time not set");
+
    }
     else 
     {
-      ////SERIAl.println("time set");
+    
     }
       if (timeStatus()!= timeSet) {
-    ////SERIAl.println("Unable to sync with the RTC");
-  } else {
-    ////SERIAl.println("RTC has set the system time");
+  } 
+  else {
+
   }
-    
+    Serial.println("despues de reloj");
  s2helpb.attachPush(s2helpbPushCallback,&s2helpb);
  s2homeb.attachPush(s2homebPushCallback,&s2homeb);
  s2backb.attachPush(s2backbPushCallback,&s2backb);
@@ -3037,7 +2436,7 @@ void setup()
  rshomeb.attachPush(rshomebPushCallback,&rshomeb);
  rshelpb.attachPush(rshelpbPushCallback,&rshelpb); 
  standbyPage.attachPush(standbyPagePushCallback,&standbyPage);
-
+Serial.println("antes de SD");
 
  if (!SD.begin(SD_CS)) 
  {
@@ -3056,6 +2455,7 @@ void setup()
    }
   }  
  }
+ Serial.println("DESPUES de SD");
 
  
  SPI.setClockDivider(SPI_CLOCK_DIV2); 
@@ -3066,7 +2466,7 @@ void setup()
  myFile = SD.open("CQTY.txt");
  if (myFile) 
  {
-  ////SERIAl.println("File exist");
+  Serial.println("File exist");
   while (myFile.available()) 
   {
    datarcv=myFile.read();
@@ -3092,6 +2492,7 @@ void setup()
       
   }
  }
+ Serial.println("despues de Cqty");
 
 
  st0=strings[0];
@@ -3102,9 +2503,20 @@ void setup()
  strings[5]= myString.substring(0,myString.indexOf("|"));
  st5=strings[5];
  ////SERIAl.println(st5);
+
+ Serial.println(strings[0]);
+ Serial.println(strings[1]);
+ Serial.println(strings[2]);
+ Serial.println(strings[3]);
+ Serial.println(strings[4]);
+ Serial.println(strings[5]);
+ 
  currentCyclesQ=strings[1].toInt();
  limitCyclesQ=strings[2].toInt();
 
+
+ 
+Serial.println("antes de h");
  myFile2 = SD.open("h.txt");
  if (myFile2) 
  {
@@ -3117,7 +2529,7 @@ void setup()
  myFile2.close();
  
  dbright=myString2.toInt();
- 
+ Serial.println("antes de v");
  myFile3 = SD.open("v.txt");
  if (myFile3) 
  {
@@ -3136,9 +2548,7 @@ void setup()
  buzz(Buzzer,3000,200); 
  buzz(Buzzer,3500,200);
  buzz(Buzzer,4000,200);
- ////SERIAl.print(dvolume);
  startLedFunction();
- 
  
  pinMode(Sensor0,INPUT);
  pinMode(lampy,OUTPUT);
@@ -3146,7 +2556,6 @@ void setup()
  pinMode(cuRead,INPUT);
  digitalWrite(lampy,LOW);
  digitalWrite(Buzzer,LOW); 
-
 
   uint32_t introReady=0;
     
